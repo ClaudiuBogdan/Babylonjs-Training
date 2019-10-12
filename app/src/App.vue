@@ -8,7 +8,8 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {Scene} from '@babylonjs/core/scene';
     import {Engine} from '@babylonjs/core/Engines/engine';
-    import {FreeCamera, HemisphericLight, Light, Mesh, MeshBuilder, Vector3} from "@babylonjs/core";
+    import {FreeCamera, HemisphericLight, Light, Mesh, MeshBuilder, TransformNode, Vector3} from "@babylonjs/core";
+    import Path from "@/game/components/Path";
 
     @Component({})
 
@@ -52,7 +53,7 @@
             this._scene = new Scene(this._engine);
 
             // Create a FreeCamera, and set its position to (x:0, y:5, z:-10).
-            this._camera = new FreeCamera('camera1', new Vector3(0, 5, -10), this._scene);
+            this._camera = new FreeCamera('camera1', new Vector3(20, 30, 40), this._scene);
 
             // Create a basic light, aiming 0,1,0 - meaning, to the sky.
             this._light = new HemisphericLight('light1', new Vector3(1, 1, 0), this._scene);
@@ -65,16 +66,17 @@
             // Attach the camera to the canvas.
             this._camera.attachControl(this._canvas, false);
 
-            // Create a built-in "sphere" shape; with 16 segments and diameter of 2.
-            let sphere = MeshBuilder.CreateSphere('sphere1',
-                {segments: 16, diameter: 2}, this._scene);
+            this.createMovingContainer();
+        }
 
-            // Move the sphere upward 1/2 of its height.
-            sphere.position.y = 1;
+        async createMovingContainer(){
 
-            // Create a built-in "ground" shape.
-            let ground = MeshBuilder.CreateGround('ground1',
-                {width: 6, height: 6, subdivisions: 2}, this._scene);
+            const path = new Path('path_main');
+
+            this._scene.registerBeforeRender(function(){
+                path.moveForward();
+            });
+
         }
 
         doRender(): void {
