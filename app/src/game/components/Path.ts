@@ -17,7 +17,7 @@ export default class Path extends TransformNode {
     }
 
     private _initializePath(){
-        const totalSpheresLength = 30;
+        const totalSpheresLength = 35;
         for(let i = 0; i < totalSpheresLength; i++){
             this._addChild(this._createBox(i))
         }
@@ -49,12 +49,25 @@ export default class Path extends TransformNode {
 
     private _createBox(index: int): Mesh {
         const box = MeshBuilder.CreateBox('box'+ index,
-            {size: 2}, this._scene);
+            {size: this._cubeDimension}, this._scene);
         box.enableEdgesRendering();
-        box.edgesWidth = 8.0;
+        box.edgesWidth = 10.0;
         box.edgesColor = new Color4(0, 0, 0, 1);
-        // Move the box upward 1/2 of its height.
         box.position.x = this._positionOffsetX - index * this._cubeDimension;
+
+        if(index % 2 == 0){
+            const obstacleHeight = 6;
+            const obstacle =  MeshBuilder.CreateBox('box'+ index,
+                {size: this._cubeDimension, height: obstacleHeight}, this._scene);
+            obstacle.enableEdgesRendering();
+            obstacle.edgesWidth = 10.0;
+            obstacle.edgesColor = new Color4(0, 0, 0, 1);
+            obstacle.parent = box;
+            obstacle.position.y = 4;
+            box.rotation.x = Math.PI * [0, 0.5, 1, 1.5][Math.floor(Math.random() * 4)];
+        }
+
+
         this._lastIndex++;
         return box;
     }
