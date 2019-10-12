@@ -12,6 +12,10 @@ export default class Path extends TransformNode {
         this._initializePath();
     }
 
+    public update(){
+        this._moveForward();
+    }
+
     private _initializePath(){
         const totalSpheresLength = 30;
         for(let i = 0; i < totalSpheresLength; i++){
@@ -23,7 +27,7 @@ export default class Path extends TransformNode {
         child.parent = this
     }
 
-    public moveForward() {
+    private _moveForward() {
         this.position.x += this._speed;
         if(this.position.x >= this._endPathPosition){
             this._dequeueElement();

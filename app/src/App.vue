@@ -10,6 +10,7 @@
     import {Engine} from '@babylonjs/core/Engines/engine';
     import {FreeCamera, HemisphericLight, Light, Mesh, MeshBuilder, TransformNode, Vector3} from "@babylonjs/core";
     import Path from "@/game/components/Path";
+    import Ball from "@/game/components/Ball";
 
     @Component({})
 
@@ -47,7 +48,7 @@
         constructor(canvasElement: string) {
             // Create canvas and engine.
             this._canvas = document.getElementById(canvasElement) as HTMLCanvasElement;
-            this._engine = new Engine(this._canvas, true);
+            this._engine = new Engine(this._canvas, true, { stencil: true });
 
             // Create a basic BJS Scene object.
             this._scene = new Scene(this._engine);
@@ -72,9 +73,10 @@
         async createMovingContainer(){
 
             const path = new Path('path_main');
+            const ball = new Ball(this._scene);
 
             this._scene.registerBeforeRender(function(){
-                path.moveForward();
+                path.update();
             });
 
         }
