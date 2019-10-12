@@ -8,7 +8,16 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {Scene} from '@babylonjs/core/scene';
     import {Engine} from '@babylonjs/core/Engines/engine';
-    import {FreeCamera, HemisphericLight, Light, Mesh, MeshBuilder, Vector3} from "@babylonjs/core";
+    import {
+        FreeCamera,
+        HemisphericLight,
+        Light,
+        Mesh,
+        MeshBuilder,
+        Vector3,
+        Animation,
+        CircleEase, EasingFunction, QuadraticEase
+    } from "@babylonjs/core";
 
     @Component({})
 
@@ -42,6 +51,7 @@
         private _scene: Scene;
         private _camera: FreeCamera;
         private _light: Light;
+        private _sphere: Mesh;
 
         constructor(canvasElement: string) {
             // Create canvas and engine.
@@ -56,6 +66,10 @@
 
             // Create a basic light, aiming 0,1,0 - meaning, to the sky.
             this._light = new HemisphericLight('light1', new Vector3(1, 1, 0), this._scene);
+
+            // Create a built-in "sphere" shape; with 16 segments and diameter of 2.
+            this._sphere = MeshBuilder.CreateSphere('sphere1',
+                {segments: 16, diameter: 2}, this._scene);
         }
 
         createScene(): void {
@@ -65,16 +79,62 @@
             // Attach the camera to the canvas.
             this._camera.attachControl(this._canvas, false);
 
-            // Create a built-in "sphere" shape; with 16 segments and diameter of 2.
-            let sphere = MeshBuilder.CreateSphere('sphere1',
-                {segments: 16, diameter: 2}, this._scene);
+
 
             // Move the sphere upward 1/2 of its height.
-            sphere.position.y = 1;
+            this._sphere.position.y = 1;
 
             // Create a built-in "ground" shape.
             let ground = MeshBuilder.CreateGround('ground1',
                 {width: 6, height: 6, subdivisions: 2}, this._scene);
+
+            this.createAnimation();
+        }
+
+        createAnimation(): void{
+            //Create a Vector3 animation at 30 FPS
+            const animationSphere = new Animation("torusEasingAnimation", "position", 60, Animation.ANIMATIONTYPE_VECTOR3,
+                Animation.ANIMATIONLOOPMODE_CYCLE);
+
+            // the torus destination position
+            const nextPos = this._sphere.position.add(new Vector3(0, 2, 0));
+
+            // Animation keys
+            const keysSphere = [];
+            const totalFrames = 240;
+            keysSphere.push({ frame: 0, value: this._sphere.position });
+            keysSphere.push({ frame: totalFrames * 0.5, value: nextPos });
+            keysSphere.push({ frame: totalFrames, value: this._sphere.position });
+            animationSphere.setKeys(keysSphere);
+
+            // Adding an easing function
+            // You can use :
+            //1.	CircleEase()
+            //2.	BackEase(amplitude)
+            //3.	BounceEase(bounces, bounciness)
+            //4.	CubicEase()
+            //5.	ElasticEase(oscillations, springiness)
+            //6.	ExponentialEase(exponent)
+            //7.	PowerEase(power)
+            //8.	QuadraticEase()
+            //9.	QuarticEase()
+            //10.	QuinticEase()
+            //11.	SineEase()
+            // And if you want a total control, you can use a Bezier Curve animation
+            //12.   BezierCurveEase(x1, y1, x2, y2)
+            const easingFunction = new QuadraticEase();
+
+            // For each easing function, you can choose beetween EASEIN (default), EASEOUT, EASEINOUT
+            easingFunction.setEasingMode(EasingFunction.EASINGMODE_EASEINOUT);
+
+            // Adding easing function to my animation
+            animationSphere.setEasingFunction(easingFunction);
+
+            // Adding animation to my torus animations collection
+            this._sphere.animations.push(animationSphere);
+
+            //Finally, launch animations on sphere, from key 0 to key 120 with loop activated
+            this._scene.beginAnimation(this._sphere, 0, totalFrames, true);
         }
 
         doRender(): void {
