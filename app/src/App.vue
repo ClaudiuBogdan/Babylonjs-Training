@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <canvas id="renderCanvas"></canvas>
+        <canvas id="renderCanvas" touch-action="none"></canvas>
     </div>
 </template>
 
@@ -8,7 +8,16 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {Scene} from '@babylonjs/core/scene';
     import {Engine} from '@babylonjs/core/Engines/engine';
-    import {FreeCamera, HemisphericLight, Light, Mesh, MeshBuilder, TransformNode, Vector3} from "@babylonjs/core";
+    import {
+        FreeCamera,
+        HemisphericLight,
+        Light,
+        Mesh,
+        MeshBuilder,
+        PointerEventTypes,
+        TransformNode,
+        Vector3
+    } from "@babylonjs/core";
     import Path from "@/game/components/Path";
     import Ball from "@/game/components/Ball";
 
@@ -66,6 +75,7 @@
 
             // Attach the camera to the canvas.
             this._camera.attachControl(this._canvas, false);
+            this._camera.inputs.clear();
 
             this.createMovingContainer();
         }
@@ -78,6 +88,17 @@
             this._scene.registerBeforeRender(function(){
                 path.update();
             });
+
+             const createTouchEvents = () => {
+                const scene = this._scene;
+                scene.onPointerObservable.add((pointerInfo) => {
+                    if(pointerInfo.type == PointerEventTypes.POINTERDOWN){
+                        console.log("POINTER TAP");
+                        path.rotation.x -= Math.PI/2;
+                    }
+                });
+            }
+            createTouchEvents();
 
         }
 
@@ -92,6 +113,7 @@
                 this._engine.resize();
             });
         }
+
     }
 </script>
 
