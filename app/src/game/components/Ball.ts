@@ -19,7 +19,7 @@ export default class Ball {
     constructor(scene: Scene){
         this._scene = scene;
         this._ballMesh = MeshBuilder.CreateSphere('ball',
-            {segments:16, diameter: 2}, scene);
+            {segments:16, diameter: 1.9}, scene);
         this._ballMesh.position.y = 2;
         this._ballMesh.position.x = this._positionOffsetX;
         // Add the highlight layer.
@@ -27,6 +27,9 @@ export default class Ball {
         // highlightLayer.addMesh(this._ballMesh, Color3.Teal());
         // highlightLayer.blurVerticalSize = 0.1;
         // highlightLayer.blurHorizontalSize = 0.1;
+        // const ballMaterial = new StandardMaterial("ball_material", scene);
+        // ballMaterial.diffuseColor = new Color3(0, 1, 1);
+        // this._ballMesh.material = ballMaterial;
 
         this.createAnimation();
         
@@ -56,6 +59,18 @@ export default class Ball {
 
         //Finally, launch animations on sphere, from key 0 to key 120 with loop activated
         this._scene.beginAnimation(this._ballMesh, 0, totalFrames, true);
+    }
+
+    public onObstacleTriggerEnter(){
+        console.log("Enter")
+    }
+
+    public onObstacleTriggerExit(){
+        console.log("Exit")
+    }
+
+    get mesh(){
+        return this._ballMesh;
     }
 
 }

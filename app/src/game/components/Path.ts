@@ -1,13 +1,28 @@
-import {Color4, int, Mesh, MeshBuilder, TransformNode} from "@babylonjs/core";
+import {
+    ActionEvent,
+    ActionManager, Color3,
+    Color4,
+    ExecuteCodeAction,
+    int,
+    Mesh,
+    MeshBuilder, StandardMaterial,
+    TransformNode,
+    Vector3
+} from "@babylonjs/core";
+import Ball from "@/game/components/Ball";
+import Obstacle from "@/game/components/Obstacle";
+import Box from "@/game/components/Box";
 
 export default class Path extends TransformNode {
-    private _speed = 0.1;
+
+    private childList = [] as any;
+    private _speed = 2;
     private _endPathPosition = 10;
     private _lastIndex = -1;
     private _positionOffsetX = 20;
     private _cubeDimension = 2;
 
-    constructor(name: string) {
+    constructor(name: string, private ball: Ball) {
         super(name);
         this._initializePath();
     }
@@ -23,8 +38,9 @@ export default class Path extends TransformNode {
         }
     }
 
-    private _addChild(child: TransformNode) {
-        child.parent = this
+    private _addChild(child: any) {
+        child.mesh.parent = this
+        this.childList.push(child);
     }
 
     private _moveForward() {
@@ -42,32 +58,12 @@ export default class Path extends TransformNode {
     }
 
     private _dequeueElement(){
-        const lastElement = this.getChildTransformNodes(true).shift() as Mesh;
-        lastElement.parent = null;
-        lastElement.dispose();
+        const lastElement = this.childList.shift() as Box;
+        lastElement.destroy();
     }
 
-    private _createBox(index: int): Mesh {
-        const box = MeshBuilder.CreateBox('box'+ index,
-            {size: this._cubeDimension}, this._scene);
-        box.enableEdgesRendering();
-        box.edgesWidth = 10.0;
-        box.edgesColor = new Color4(0, 0, 0, 1);
-        box.position.x = this._positionOffsetX - index * this._cubeDimension;
-
-        if(index % 2 == 0){
-            const obstacleHeight = 6;
-            const obstacle =  MeshBuilder.CreateBox('box'+ index,
-                {size: this._cubeDimension, height: obstacleHeight}, this._scene);
-            obstacle.enableEdgesRendering();
-            obstacle.edgesWidth = 10.0;
-            obstacle.edgesColor = new Color4(0, 0, 0, 1);
-            obstacle.parent = box;
-            obstacle.position.y = 4;
-            box.rotation.x = Math.PI * [0, 0.5, 1, 1.5][Math.floor(Math.random() * 4)];
-        }
-
-
+    private _createBox(index: int): Box {
+        const box = new Box(index, this._cubeDimension, this._positionOffsetX, this._scene, this.ball)
         this._lastIndex++;
         return box;
     }

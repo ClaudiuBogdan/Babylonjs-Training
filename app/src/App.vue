@@ -50,7 +50,7 @@
     class Game {
         private readonly _canvas: HTMLCanvasElement;
         private readonly _engine: Engine;
-        private _scene: Scene;
+        private readonly _scene: Scene;
         private _camera: FreeCamera;
         private _light: Light;
 
@@ -70,6 +70,8 @@
         }
 
         createScene(): void {
+            this._scene.collisionsEnabled = true;
+
             // Target the camera to scene origin.
             this._camera.setTarget(Vector3.Zero());
 
@@ -82,8 +84,8 @@
 
         async createMovingContainer(){
 
-            const path = new Path('path_main');
             const ball = new Ball(this._scene);
+            const path = new Path('path_main', ball);
 
             this._scene.registerBeforeRender(function(){
                 path.update();
