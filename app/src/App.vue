@@ -57,7 +57,7 @@
         constructor(canvasElement: string) {
             // Create canvas and engine.
             this._canvas = document.getElementById(canvasElement) as HTMLCanvasElement;
-            this._engine = new Engine(this._canvas, true, { stencil: true });
+            this._engine = new Engine(this._canvas, true);
 
             // Create a basic BJS Scene object.
             this._scene = new Scene(this._engine);

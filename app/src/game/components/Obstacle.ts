@@ -1,33 +1,49 @@
-import {ActionManager, Color4, ExecuteCodeAction, int, Mesh, MeshBuilder, Scene} from "@babylonjs/core";
+import {
+    ActionManager, Animation, BezierCurveEase,
+    Color4,
+    ExecuteCodeAction, float,
+    int,
+    Matrix,
+    Mesh,
+    MeshBuilder,
+    Scene,
+    Vector3
+} from "@babylonjs/core";
 import Ball from "@/game/components/Ball";
 
-export default class Obstacle{
+export default class Obstacle {
 
     private _mesh: Mesh;
+    private _boxSize: number;
 
     private _registeredActionList = [] as Array<ExecuteCodeAction>;
-    private readonly _obstacleHeight = 6;
+    private readonly _obstacleHeight = Math.floor(3 + Math.random() * 3);
 
-    constructor(index: int, size: int, parent: Mesh, scene: Scene){
+    constructor(index: int, boxSize: int, parent: Mesh, scene: Scene) {
 
-        const obstacleMesh =  MeshBuilder.CreateBox('obstacle'+ index,
-            {size, height: this._obstacleHeight}, scene);
+        const obstacleMesh = MeshBuilder.CreateBox('obstacle' + index,
+            {size: boxSize * 0.99, height: boxSize}, scene);
         obstacleMesh.enableEdgesRendering();
         obstacleMesh.edgesWidth = 10.0;
         obstacleMesh.edgesColor = new Color4(0, 0, 0, 1);
         obstacleMesh.parent = parent;
-        obstacleMesh.position.y = 4;
+        this._boxSize = boxSize;
+
+        // obstacleMesh.position.y = 0;
         // obstacleMesh.material = boxMaterial;
         obstacleMesh.actionManager = new ActionManager(scene);
-        this._mesh = obstacleMesh
+        this._mesh = obstacleMesh;
 
+        this._setObstacleScale(0.01);
+
+        this._startScaleAnimation(scene);
     }
 
-    get mesh(): Mesh{
+    get mesh(): Mesh {
         return this._mesh;
     }
 
-    public registerCollisionDetection(ball: Ball): void{
+    public registerCollisionDetection(ball: Ball): void {
         const registeredActions = [] as Array<ExecuteCodeAction>;
         //@ts-ignore
         registeredActions.push(this.mesh.actionManager.registerAction(new ExecuteCodeAction({
@@ -38,11 +54,11 @@ export default class Obstacle{
         registeredActions.push(this.mesh.actionManager.registerAction(new ExecuteCodeAction({
             trigger: ActionManager.OnIntersectionExitTrigger,
             parameter: ball.mesh
-        },ball.onObstacleTriggerExit.bind(ball))));
+        }, ball.onObstacleTriggerExit.bind(ball))));
         this._registeredActionList = registeredActions;
     }
 
-    public unregisterCollisionDetection(){
+    public unregisterCollisionDetection() {
         this._registeredActionList.forEach(action => {
             //@ts-ignore
             this.mesh.actionManager.unregisterAction(action);
@@ -50,8 +66,29 @@ export default class Obstacle{
         delete this.mesh.actionManager
     }
 
+    private _setObstacleScale(scale: float) {
+        this.mesh.scaling.y = scale;
+        this.mesh.position.y = this.mesh.scaling.y + this._boxSize / 2;
+    }
+
     destroy() {
         this.unregisterCollisionDetection();
         this.mesh.dispose(false, true);
+    }
+
+    private _startScaleAnimation(scene: Scene) {
+        const animationDelay = 2000;
+        setTimeout(() => {
+            const scaleObstacle = () => {
+                const scaleSpeed = 0.05
+                this._setObstacleScale(this.mesh.scaling.y + scaleSpeed)
+                if (this.mesh.scaling.y > this._obstacleHeight) {
+                    scene.unregisterBeforeRender(scaleObstacle);
+                }
+            };
+            scene.registerBeforeRender(scaleObstacle);
+        }, animationDelay)
+
+        // scene.unregisterAfterRender(unregister);
     }
 }
