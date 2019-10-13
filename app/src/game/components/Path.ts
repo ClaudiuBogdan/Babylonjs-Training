@@ -1,16 +1,8 @@
 import {
-    ActionEvent,
-    ActionManager, Color3,
-    Color4,
-    ExecuteCodeAction,
     int,
-    Mesh,
-    MeshBuilder, StandardMaterial,
     TransformNode,
-    Vector3
 } from "@babylonjs/core";
 import Ball from "@/game/components/Ball";
-import Obstacle from "@/game/components/Obstacle";
 import Box from "@/game/components/Box";
 
 export default class Path extends TransformNode {

@@ -1,21 +1,9 @@
 import {
-    Color3,
     Animation,
-    EasingFunction,
-    HighlightLayer,
-    Material,
     Mesh,
     MeshBuilder,
-    QuadraticEase,
     Scene,
-    StandardMaterial,
     Vector3,
-    BounceEase,
-    PowerEase,
-    CubicEase,
-    ElasticEase,
-    CircleEase,
-    SineEase,
     BezierCurveEase,
     ActionEvent
 } from "@babylonjs/core";
