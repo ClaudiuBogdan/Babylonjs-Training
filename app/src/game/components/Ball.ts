@@ -30,29 +30,30 @@ export default class Ball {
         // ballMaterial.diffuseColor = new Color3(0, 1, 1);
         // this._ballMesh.material = ballMaterial;
 
-        // this.createAnimation();
+        this.createAnimation();
         
     }
 
     public update(){
         this.mesh.position.x += this._speed;
-        if(this.mesh.position.x > 10) this.fall();
+        if(this.mesh.position.x > 15) this.fall();
     }
 
     createAnimation(): void{
         //Create a Vector3 animation at 30 FPS
-        const animationSphere = new Animation("ballEasingAnimation", "position", 60, Animation.ANIMATIONTYPE_VECTOR3,
+        const animationSphere = new Animation("ballEasingAnimation", "position.y", 60,
+            Animation.ANIMATIONTYPE_FLOAT,
             Animation.ANIMATIONLOOPMODE_CYCLE);
 
         // the torus destination position
-        const nextPos = this._ballMesh.position.add(new Vector3(0, 2, 0));
+        const nextPosY = this._ballMesh.position.y + 2;
 
         // Animation keys
         const keysSphere = [];
         const totalFrames = 35;
-        keysSphere.push({ frame: 0, value: this._ballMesh.position });
-        keysSphere.push({ frame: totalFrames * 0.69, value: nextPos });
-        keysSphere.push({ frame: totalFrames, value: this._ballMesh.position });
+        keysSphere.push({ frame: 0, value: this._ballMesh.position.y });
+        keysSphere.push({ frame: totalFrames * 0.69, value: nextPosY });
+        keysSphere.push({ frame: totalFrames, value: this._ballMesh.position.y });
         animationSphere.setKeys(keysSphere);
 
         // Adding easing function to my animation
