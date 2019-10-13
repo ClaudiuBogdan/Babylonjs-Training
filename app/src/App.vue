@@ -96,10 +96,10 @@
                 scene.onPointerObservable.add((pointerInfo) => {
                     if(pointerInfo.type == PointerEventTypes.POINTERDOWN){
                         console.log("POINTER TAP");
-                        path.rotation.x -= Math.PI/2;
+                        path.rotatePath(path.targetRotation - Math.PI/2);
                     }
                 });
-            }
+            };
             createTouchEvents();
 
         }

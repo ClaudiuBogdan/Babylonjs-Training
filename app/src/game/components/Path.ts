@@ -1,4 +1,5 @@
 import {
+    Animation, BezierCurveEase, float,
     int,
     TransformNode,
 } from "@babylonjs/core";
@@ -13,6 +14,7 @@ export default class Path extends TransformNode {
     private _lastIndex = -1;
     private _positionOffsetX = 20;
     private _cubeDimension = 2;
+    private _targetRotation = 0;
 
     constructor(name: string, private ball: Ball) {
         super(name);
@@ -59,5 +61,35 @@ export default class Path extends TransformNode {
         const box = new Box(index, this._cubeDimension, this._positionOffsetX, this._scene, this.ball)
         this._lastIndex++;
         return box;
+    }
+
+    public rotatePath(nextRotation: float): void{
+        //Create a Vector3 animation at 30 FPS
+        this._targetRotation = nextRotation;
+        const pathAnimation = new Animation("pathEasingAnimation", "rotation.x", 60,
+            Animation.ANIMATIONTYPE_FLOAT,
+            Animation.ANIMATIONLOOPMODE_RELATIVE);
+
+        // the torus destination position
+
+        // Animation keys
+        const keysSphere = [];
+        const totalFrames = 25;
+        keysSphere.push({ frame: 0, value: this.rotation.x });
+        keysSphere.push({ frame: totalFrames, value: nextRotation });
+        pathAnimation.setKeys(keysSphere);
+
+        // Adding easing function to my animation
+        pathAnimation.setEasingFunction(new BezierCurveEase(0.331, 0.441, 0.444, 1.649));
+
+        // Adding animation to my torus animations collection
+        this.animations.push(pathAnimation);
+
+        //Finally, launch animations on sphere, from key 0 to key 120 with loop activated
+        this._scene.beginAnimation(this, 0, totalFrames, false);
+    }
+
+    get targetRotation(): float{
+        return this._targetRotation;
     }
 }
