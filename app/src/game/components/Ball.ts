@@ -11,7 +11,8 @@ import {
 export default class Ball {
 
     private _ballMesh: Mesh;
-    private _positionOffsetX = 5;
+    private _positionOffsetX = -5;
+    private _speed = 0;
     private _scene: Scene;
 
     constructor(scene: Scene){
@@ -29,13 +30,18 @@ export default class Ball {
         // ballMaterial.diffuseColor = new Color3(0, 1, 1);
         // this._ballMesh.material = ballMaterial;
 
-        this.createAnimation();
+        // this.createAnimation();
         
+    }
+
+    public update(){
+        this.mesh.position.x += this._speed;
+        if(this.mesh.position.x > 10) this.fall();
     }
 
     createAnimation(): void{
         //Create a Vector3 animation at 30 FPS
-        const animationSphere = new Animation("torusEasingAnimation", "position", 60, Animation.ANIMATIONTYPE_VECTOR3,
+        const animationSphere = new Animation("ballEasingAnimation", "position", 60, Animation.ANIMATIONTYPE_VECTOR3,
             Animation.ANIMATIONLOOPMODE_CYCLE);
 
         // the torus destination position
@@ -61,10 +67,19 @@ export default class Ball {
 
     public onObstacleTriggerEnter(actionEvent: ActionEvent){
         console.log("Enter")
+        const obstacleMesh = actionEvent.source as Mesh;
+        if(obstacleMesh.getAbsolutePosition().x + 1 + 1.5/2 > this.mesh.position.x)
+            return this.fall();
+        this._speed = 0.2;
     }
 
     public onObstacleTriggerExit(actionEvent: ActionEvent){
         console.log("Exit")
+        this._speed = 0;
+    }
+
+    private fall(){
+        this.mesh.position.y = 8;
     }
 
     get mesh(){

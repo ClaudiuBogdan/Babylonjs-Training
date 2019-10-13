@@ -21,6 +21,7 @@ export default class Path extends TransformNode {
 
     public update(){
         this._moveForward();
+        this.ball.update();
     }
 
     private _initializePath(){

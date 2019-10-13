@@ -33,12 +33,12 @@ export default class Obstacle{
         registeredActions.push(this.mesh.actionManager.registerAction(new ExecuteCodeAction({
             trigger: ActionManager.OnIntersectionEnterTrigger,
             parameter: ball.mesh
-        }, ball.onObstacleTriggerEnter)));
+        }, ball.onObstacleTriggerEnter.bind(ball))));
         //@ts-ignore
         registeredActions.push(this.mesh.actionManager.registerAction(new ExecuteCodeAction({
             trigger: ActionManager.OnIntersectionExitTrigger,
             parameter: ball.mesh
-        },ball.onObstacleTriggerExit)));
+        },ball.onObstacleTriggerExit.bind(ball))));
         this._registeredActionList = registeredActions;
     }
 
