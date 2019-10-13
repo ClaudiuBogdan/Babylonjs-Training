@@ -52,6 +52,6 @@ export default class Obstacle{
 
     destroy() {
         this.unregisterCollisionDetection();
-        this.mesh.dispose();
+        this.mesh.dispose(false, true);
     }
 }

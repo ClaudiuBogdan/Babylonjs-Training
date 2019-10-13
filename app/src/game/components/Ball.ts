@@ -5,9 +5,19 @@ import {
     HighlightLayer,
     Material,
     Mesh,
-    MeshBuilder, QuadraticEase,
+    MeshBuilder,
+    QuadraticEase,
     Scene,
-    StandardMaterial, Vector3, BounceEase, PowerEase, CubicEase, ElasticEase, CircleEase, SineEase, BezierCurveEase
+    StandardMaterial,
+    Vector3,
+    BounceEase,
+    PowerEase,
+    CubicEase,
+    ElasticEase,
+    CircleEase,
+    SineEase,
+    BezierCurveEase,
+    ActionEvent
 } from "@babylonjs/core";
 
 export default class Ball {
@@ -61,11 +71,11 @@ export default class Ball {
         this._scene.beginAnimation(this._ballMesh, 0, totalFrames, true);
     }
 
-    public onObstacleTriggerEnter(){
+    public onObstacleTriggerEnter(actionEvent: ActionEvent){
         console.log("Enter")
     }
 
-    public onObstacleTriggerExit(){
+    public onObstacleTriggerExit(actionEvent: ActionEvent){
         console.log("Exit")
     }
 

@@ -16,7 +16,7 @@ import Box from "@/game/components/Box";
 export default class Path extends TransformNode {
 
     private childList = [] as any;
-    private _speed = 2;
+    private _speed = 0.2;
     private _endPathPosition = 10;
     private _lastIndex = -1;
     private _positionOffsetX = 20;

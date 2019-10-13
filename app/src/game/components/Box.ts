@@ -40,7 +40,7 @@ export default class Box{
     destroy() {
         this.mesh.parent = null;
         this._obstacle ? this._obstacle.destroy() : undefined;
-        this.mesh.dispose();
+        this.mesh.dispose(false, true);
         delete this._scene;
         delete this._ball;
     }
