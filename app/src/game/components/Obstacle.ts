@@ -35,6 +35,7 @@ export default class Obstacle {
         this._mesh = obstacleMesh;
 
         this._setObstacleScale(0.01);
+        this._mesh.position.y -= 0.01;
 
         this._startScaleAnimation(scene);
     }

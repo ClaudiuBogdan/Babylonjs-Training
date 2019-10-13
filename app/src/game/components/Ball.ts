@@ -11,7 +11,8 @@ import {
 export default class Ball {
 
     private _ballMesh: Mesh;
-    private _positionOffsetX = -5;
+    private _positionOffsetX = 0;
+    private _endPathPositionX = 10;
     private _speed = 0;
     private _scene: Scene;
 
@@ -36,7 +37,7 @@ export default class Ball {
 
     public update(){
         this.mesh.position.x += this._speed;
-        if(this.mesh.position.x > 15) this.fall();
+        if(this.mesh.position.x > this._endPathPositionX) this.fall();
     }
 
     createAnimation(): void{
@@ -80,7 +81,7 @@ export default class Ball {
     }
 
     private fall(){
-        this.mesh.position.y = 8;
+        this.mesh.position.y = 15;
     }
 
     get mesh(){
